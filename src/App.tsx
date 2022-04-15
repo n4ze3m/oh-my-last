@@ -1,5 +1,5 @@
 import {
-    BrowserRouter,
+    MemoryRouter,
     Routes,
     Route,
 } from "react-router-dom";
@@ -9,12 +9,12 @@ import View from "./components/View/View";
 
 export default function App() {
     return (
-        <BrowserRouter>
+        <MemoryRouter>
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/create" element={<Create />} />
                 <Route path="/view/:id" element={<View />} />
             </Routes>
-        </BrowserRouter>
+        </MemoryRouter>
     )
 }

@@ -1,5 +1,8 @@
-import { Button, Center, Container, createStyles, Title } from "@mantine/core";
+import { Button, Center, Container, createStyles, Title, Text } from "@mantine/core";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { findAllTrack, removeTrack } from "../../services/db";
+import Loading from "../Common/Loading";
 import LinkCard from "./LinkCard";
 
 
@@ -28,24 +31,43 @@ const useStyles = createStyles((theme) => ({
 
 export default function Home() {
     const { classes } = useStyles();
-     let navigate = useNavigate();
+    let navigate = useNavigate();
+    const [data, setData] = useState([])
+    const [loading, setLoading] = useState(true)
+
+    const fetchData = async () => {
+        const tacks = findAllTrack()
+        setData(tacks)
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, []);
+
     return (
         <Container className={classes.container}>
             <Title className={classes.title}>Oh My Last</Title>
-            <Center>
+            <Center mb="sm">
                 <Button my="sm" color="teal"
-                onClick={
-                    () => navigate('/create')
-                }
+                    onClick={
+                        () => navigate('/create')
+                    }
                 >
                     Create new track
                 </Button>
             </Center>
-            <LinkCard />
-            <LinkCard />
-            <LinkCard />
-            <LinkCard />
-            <LinkCard />
+            {
+                loading && <Loading />
+            }
+            {
+                !loading && data.map((track: any) => {
+                    return <LinkCard key={track.id} track={track} onDelete={() => {
+                        removeTrack(track.id)
+                        fetchData()
+                    }} />
+                })
+            }
         </Container>
     )
 }
